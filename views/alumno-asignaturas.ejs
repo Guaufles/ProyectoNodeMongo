@@ -1,0 +1,84 @@
+<% include layout %>
+<h2 class="text-center">Mis Asignaturas</h2>
+
+<!-- Mostrar mensaje informativo si existe -->
+<% if (locals.messages && locals.messages.info) { %>
+  <div class="alert alert-info text-center" role="alert">
+    <% messages.info.forEach(function(message) { %>
+      <%= message %><br>
+    <% }) %>
+  </div>
+<% } %>
+
+<!-- Mostrar mensaje de error si existe -->
+<% if (locals.messages && locals.messages.error) { %>
+  <div class="alert alert-danger text-center" role="alert">
+    <% messages.error.forEach(function(message) { %>
+      <%= message %><br>
+    <% }) %>
+  </div>
+<% } %>
+
+<!-- Lista de asignaturas -->
+<% if (asignaturas && asignaturas.length > 0) { %>
+  <div class="card-deck">
+    <% asignaturas.forEach(asignatura => { %>
+      <div class="card mb-4">
+        <div class="card-header bg-info text-white text-center">
+          <%= asignatura.nombre %> - <%= asignatura.curso %>
+        </div>
+        <div class="card-body">
+          <p><strong>Estudio:</strong> 
+            <% if (asignatura.estudio) { %>
+              <%= asignatura.estudio.nombre %>
+            <% } else { %>
+              Sin estudio asignado
+            <% } %>
+          </p>
+          <p><strong>Profesores:</strong>
+            <% if (asignatura.profesores && asignatura.profesores.length > 0) { %>
+              <% asignatura.profesores.forEach(profesor => { %>
+                <%= profesor.nombre %> <%= profesor.apellido %><br>
+              <% }) %>
+            <% } else { %>
+              Sin profesores asignados
+            <% } %>
+          </p>
+          <p><strong>Alumnos:</strong>
+            <% if (asignatura.alumnos && asignatura.alumnos.length > 0) { %>
+              <% asignatura.alumnos.forEach(alumno => { %>
+                <%= alumno.nombre %> <%= alumno.apellido %><br>
+              <% }) %>
+            <% } else { %>
+              Sin alumnos asignados
+            <% } %>
+          </p>
+          <p><strong>Software:</strong></p>
+          <% if (asignatura.software && asignatura.software.length > 0) { %>
+            <% asignatura.software.forEach(software => { %>
+              <div class="mb-2">
+                <strong>Descripción:</strong> <%= software.descripcion || 'Sin descripción' %><br>
+                <strong>Link:</strong> 
+                <% if (software.link) { %>
+                  <a href="<%= software.link %>" target="_blank"><%= software.link %></a><br>
+                <% } else { %>
+                  Sin link disponible<br>
+                <% } %>
+              </div>
+            <% }) %>
+          <% } else { %>
+            No hay software asociado
+          <% } %>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+<% } else { %>
+  <div class="alert alert-warning text-center" role="alert">
+    No estás matriculado en ninguna asignatura.
+  </div>
+<% } %>
+
+<!-- Volver al inicio -->
+<a href="/logout" class="btn btn-secondary mt-4">Cerrar Sesión</a>
+

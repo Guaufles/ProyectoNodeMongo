@@ -1,0 +1,153 @@
+<% include layout %>
+<h2 class="text-center">Gestión de Asignaturas</h2>
+
+<!-- Mostrar mensaje de éxito si existe -->
+<% if (locals.messages && locals.messages.success) { %>
+  <div class="alert alert-success text-center" role="alert">
+    <% messages.success.forEach(function(message) { %>
+      <%= message %><br>
+    <% }) %>
+  </div>
+<% } %>
+
+<!-- Mostrar mensaje de error si existe -->
+<% if (locals.messages && locals.messages.error) { %>
+  <div class="alert alert-danger text-center" role="alert">
+    <% messages.error.forEach(function(message) { %>
+      <%= message %><br>
+    <% }) %>
+  </div>
+<% } %>
+
+<!-- Formulario para crear una nueva asignatura -->
+<h3>Crear Asignatura</h3>
+<form action="/asignaturas" method="POST" class="needs-validation" novalidate>
+  <div class="form-group">
+    <label for="nombre">Nombre</label>
+    <input type="text" name="nombre" class="form-control" id="nombre" placeholder="Nombre" required>
+    <div class="invalid-feedback">Por favor, introduce el nombre.</div>
+  </div>
+  <div class="form-group">
+    <label for="curso">Curso</label>
+    <input type="text" name="curso" class="form-control" id="curso" placeholder="Curso" required>
+    <div class="invalid-feedback">Por favor, introduce el curso.</div>
+  </div>
+  <div class="form-group">
+    <label for="estudio">Estudio</label>
+    <select name="estudio" class="form-control" id="estudio" required>
+      <% if (estudios && estudios.length > 0) { %>
+        <% estudios.forEach(estudio => { %>
+          <option value="<%= estudio._id %>"><%= estudio.nombre %> - <%= estudio.tipo %></option>
+        <% }) %>
+      <% } else { %>
+        <option value="" disabled selected>No hay estudios disponibles</option>
+      <% } %>
+    </select>
+    <div class="invalid-feedback">Por favor, selecciona un estudio.</div>
+  </div>
+  <button type="submit" class="btn btn-primary">Crear Asignatura</button>
+</form>
+
+<!-- Lista de asignaturas -->
+<h3>Lista de Asignaturas</h3>
+<div class="card-deck">
+  <% if (asignaturas && asignaturas.length > 0) { %>
+    <% asignaturas.forEach(asignatura => { %>
+      <div class="card mb-4">
+        <div class="card-header bg-info text-white text-center">
+          <%= asignatura.nombre %> - <%= asignatura.curso %>
+        </div>
+        <div class="card-body">
+          <p><strong>Estudio:</strong> 
+            <% if (asignatura.estudio) { %>
+              <%= asignatura.estudio.nombre %>
+            <% } else { %>
+              Sin estudio asignado
+            <% } %>
+          </p>
+          <p><strong>Profesores:</strong>
+            <% if (asignatura.profesores && asignatura.profesores.length > 0) { %>
+              <% asignatura.profesores.forEach(profesor => { %>
+                <%= profesor.nombre %> <%= profesor.apellido %><br>
+              <% }) %>
+            <% } else { %>
+              Sin profesores asignados
+            <% } %>
+          </p>
+          <p><strong>Alumnos:</strong>
+            <% if (asignatura.alumnos && asignatura.alumnos.length > 0) { %>
+              <% asignatura.alumnos.forEach(alumno => { %>
+                <%= alumno.nombre %> <%= alumno.apellido %><br>
+              <% }) %>
+            <% } else { %>
+              Sin alumnos asignados
+            <% } %>
+          </p>
+
+          <!-- Botones para asignar/desasignar profesores -->
+          <div class="d-flex justify-content-between align-items-center">
+            <!-- Formulario para asignar profesor -->
+            <form action="/asignaturas/<%= asignatura._id %>/profesores" method="POST" style="display: inline;">
+              <select name="profesorId" class="form-control" required>
+                <% users.filter(user => user.rol === 'Profesor' && !asignatura.profesores.map(p => p._id.toString()).includes(user._id.toString())).forEach(profesor => { %>
+                  <option value="<%= profesor._id %>"><%= profesor.nombre %> <%= profesor.apellido %></option>
+                <% }) %>
+              </select>
+              <button type="submit" class="btn btn-success btn-sm">Asignar Profesor</button>
+            </form>
+
+            <!-- Formulario para desasignar profesor -->
+            <form action="/asignaturas/<%= asignatura._id %>/profesores/delete" method="POST" style="display: inline;">
+              <select name="profesorId" class="form-control" required>
+                <% asignatura.profesores.forEach(profesor => { %>
+                  <option value="<%= profesor._id %>"><%= profesor.nombre %> <%= profesor.apellido %></option>
+                <% }) %>
+              </select>
+              <button type="submit" class="btn btn-danger btn-sm">Desasignar Profesor</button>
+            </form>
+          </div>
+
+          <!-- Botones para asignar/desasignar alumnos -->
+          <div class="d-flex justify-content-between align-items-center mt-2">
+            <!-- Formulario para asignar alumno -->
+            <form action="/asignaturas/<%= asignatura._id %>/alumnos" method="POST" style="display: inline;">
+              <select name="alumnoId" class="form-control" required>
+                <% users.filter(user => user.rol === 'Alumno' && !asignatura.alumnos.map(a => a._id.toString()).includes(user._id.toString())).forEach(alumno => { %>
+                  <option value="<%= alumno._id %>"><%= alumno.nombre %> <%= alumno.apellido %></option>
+                <% }) %>
+              </select>
+              <button type="submit" class="btn btn-info btn-sm">Asignar Alumno</button>
+            </form>
+
+            <!-- Formulario para desasignar alumno -->
+            <form action="/asignaturas/<%= asignatura._id %>/alumnos/delete" method="POST" style="display: inline;">
+              <select name="alumnoId" class="form-control" required>
+                <% asignatura.alumnos.forEach(alumno => { %>
+                  <option value="<%= alumno._id %>"><%= alumno.nombre %> <%= alumno.apellido %></option>
+                <% }) %>
+              </select>
+              <button type="submit" class="btn btn-warning btn-sm">Desasignar Alumno</button>
+            </form>
+          </div>
+
+          <!-- Botones principales -->
+          <div class="d-flex justify-content-between align-items-center mt-2">
+            <!-- Enlace para editar -->
+            <a href="/asignaturas/edit/<%= asignatura._id %>" class="btn btn-warning btn-sm">Editar</a>
+
+            <!-- Enlace para eliminar -->
+            <a href="/asignaturas/delete/<%= asignatura._id %>" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas eliminar esta asignatura?')">Eliminar</a>
+
+            <!-- Enlace para gestionar software -->
+            <a href="/asignaturas/<%= asignatura._id %>/software" class="btn btn-primary btn-sm">Gestionar Software</a>
+          </div>
+        </div>
+      </div>
+    <% }) %>
+  <% } else { %>
+    <div class="alert alert-info text-center" role="alert">
+      No hay asignaturas disponibles.
+    </div>
+  <% } %>
+</div>
+

@@ -1,0 +1,20 @@
+<% include layout %>
+<h2 class="text-center">Editar Software para <%= asignaturaId %></h2>
+
+<!-- Formulario para actualizar el software -->
+<form action="/asignaturas/<%= asignaturaId %>/software/update/<%= software._id %>" method="POST" class="needs-validation" novalidate>
+  <div class="form-group">
+    <label for="link">Link</label>
+    <input type="text" name="link" class="form-control" id="link" placeholder="Enlace al software" value="<%= software.link %>" required>
+    <div class="invalid-feedback">Por favor, introduce el enlace.</div>
+  </div>
+  <div class="form-group">
+    <label for="descripcion">Descripción</label>
+    <textarea name="descripcion" class="form-control" id="descripcion" placeholder="Descripción del software" required><%= software.descripcion %></textarea>
+    <div class="invalid-feedback">Por favor, introduce la descripción.</div>
+  </div>
+  <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+</form>
+
+<!-- Volver a la gestión de software -->
+<a href="/asignaturas/<%= asignaturaId %>/software" class="btn btn-secondary">Volver</a>

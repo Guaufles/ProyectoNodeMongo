@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= typeof title !== 'undefined' ? title : 'ESI App Store' %></title>
+  <!-- BOOTSTRAP CDN -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/public/stylesheets/styles.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">ESI APP STORE</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarScroll">
+        <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
+          <!-- Opciones para administradores -->
+          <% if (isAdmin) { %>
+            <li class="nav-item active">
+              <a class="nav-link" href="/users">Gestión de Usuarios</a>
+            </li>
+            <li class="nav-item active">
+              <a class="nav-link" href="/asignaturas">Gestión de Asignaturas</a>
+            </li>
+            <li class="nav-item active">
+              <a class="nav-link" href="/estudios">Gestión de Estudios</a>
+            </li>
+            <li class="nav-item active">
+              <a class="nav-link" href="/profile">Perfil</a> <!-- Enlace al perfil del administrador -->
+            </li>
+          <% } else if (isProfesor) { %>
+            <!-- Opción para profesores -->
+            <li class="nav-item active">
+              <a class="nav-link" href="/profesor/asignaturas">Mis Asignaturas</a>
+            </li>
+          <% } else if (isAlumno) { %>
+            <!-- Opción para alumnos -->
+            <li class="nav-item active">
+              <a class="nav-link" href="/alumno/asignaturas">Mis Asignaturas</a>
+            </li>
+          <% } %>
+        </ul>
+
+        <!-- Opción para cerrar sesión si el usuario está autenticado -->
+        <% if (user) { %>
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="/logout">Cerrar Sesión</a>
+            </li>
+          </ul>
+        <% } else { %>
+          <!-- Opciones para usuarios no autenticados -->
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="/signin">Iniciar Sesión</a>
+            </li>
+            <!--
+            <li class="nav-item">
+              <a class="nav-link" href="/signup">Registrarse</a>
+            </li>
+            -->
+          </ul>
+        <% } %>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mostrar mensaje de éxito si existe -->
+  <% if (locals.messages && locals.messages.success) { %>
+    <div class="alert alert-success text-center" role="alert">
+      <% messages.success.forEach(function(message) { %>
+        <%= message %><br>
+      <% }) %>
+    </div>
+  <% } %>
+
+  <!-- Mostrar mensaje de error si existe -->
+  <% if (locals.messages && locals.messages.error) { %>
+    <div class="alert alert-danger text-center" role="alert">
+      <% messages.error.forEach(function(message) { %>
+        <%= message %><br>
+      <% }) %>
+    </div>
+  <% } %>
+
+  <!-- Mostrar mensaje informativo si existe -->
+  <% if (locals.messages && locals.messages.info) { %>
+    <div class="alert alert-info text-center" role="alert">
+      <% messages.info.forEach(function(message) { %>
+        <%= message %><br>
+      <% }) %>
+    </div>
+  <% } %>
+
+  <!-- Contenido principal -->
+  <div class="container mt-4">
+    <%- body %>
+  </div>
+
+  <!-- Scripts de Bootstrap -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
+
+

@@ -1,0 +1,70 @@
+<% include layout %>
+<h2 class="text-center">Gestión de Estudios</h2>
+
+<!-- Mostrar mensaje de éxito o error -->
+<% if (locals.messages && locals.messages.success) { %>
+  <div class="alert alert-success text-center" role="alert">
+    <% messages.success.forEach(function(message) { %>
+      <%= message %><br>
+    <% }) %>
+  </div>
+<% } %>
+<% if (locals.messages && locals.messages.error) { %>
+  <div class="alert alert-danger text-center" role="alert">
+    <% messages.error.forEach(function(message) { %>
+      <%= message %><br>
+    <% }) %>
+  </div>
+<% } %>
+
+<!-- Formulario para crear un nuevo estudio -->
+<h3>Crear Estudio</h3>
+<form action="/estudios" method="POST" class="needs-validation" novalidate>
+  <div class="form-group">
+    <label for="nombre">Nombre</label>
+    <input type="text" name="nombre" class="form-control" id="nombre" placeholder="Nombre" required>
+    <div class="invalid-feedback">Por favor, introduce el nombre.</div>
+  </div>
+  <div class="form-group">
+    <label for="tipo">Tipo</label>
+    <input type="text" name="tipo" class="form-control" id="tipo" placeholder="Tipo" required>
+    <div class="invalid-feedback">Por favor, introduce el tipo.</div>
+  </div>
+  <button type="submit" class="btn btn-primary">Crear Estudio</button>
+</form>
+
+<!-- Lista de estudios -->
+<h3>Lista de Estudios</h3>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>N°</th>
+      <th>Nombre</th>
+      <th>Tipo</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% if (estudios && estudios.length > 0) { %>
+      <% for (var i = 0; i < estudios.length; i++) { %>
+        <tr>
+          <td><%= i + 1 %></td>
+          <td><%= estudios[i].nombre || 'No especificado' %></td>
+          <td><%= estudios[i].tipo || 'No especificado' %></td>
+          <td>
+            <!-- Enlace para editar -->
+            <a href="/estudios/edit/<%= estudios[i]._id %>" class="btn btn-info">Editar</a>
+
+            <!-- Enlace para eliminar -->
+            <a href="/estudios/delete/<%= estudios[i]._id %>" class="btn btn-danger" onclick="return confirm('¿Estás seguro de que deseas eliminar este estudio?')">Eliminar</a>
+          </td>
+        </tr>
+      <% } %>
+    <% } else { %>
+      <tr>
+        <td colspan="4" class="text-center">No hay estudios disponibles.</td>
+      </tr>
+    <% } %>
+  </tbody>
+</table>
+

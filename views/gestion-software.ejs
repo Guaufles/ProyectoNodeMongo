@@ -1,0 +1,73 @@
+<% include layout %>
+<h2 class="text-center">Gestión de Software para <%= asignatura.nombre %> (<%= asignatura.curso %>)</h2>
+
+<!-- Mostrar mensaje de éxito si existe -->
+<% if (locals.messages && locals.messages.success) { %>
+  <div class="alert alert-success text-center" role="alert">
+    <% messages.success.forEach(function(message) { %>
+      <%= message %><br>
+    <% }) %>
+  </div>
+<% } %>
+
+<!-- Mostrar mensaje de error si existe -->
+<% if (locals.messages && locals.messages.error) { %>
+  <div class="alert alert-danger text-center" role="alert">
+    <% messages.error.forEach(function(message) { %>
+      <%= message %><br>
+    <% }) %>
+  </div>
+<% } %>
+
+<!-- Formulario para añadir un nuevo software -->
+<h3>Añadir Software</h3>
+<form action="/asignaturas/<%= asignatura._id %>/software" method="POST" class="needs-validation" novalidate>
+  <div class="form-group">
+    <label for="link">Link</label>
+    <input type="text" name="link" class="form-control" id="link" placeholder="Enlace al software" required>
+    <div class="invalid-feedback">Por favor, introduce el enlace.</div>
+  </div>
+  <div class="form-group">
+    <label for="descripcion">Descripción</label>
+    <textarea name="descripcion" class="form-control" id="descripcion" placeholder="Descripción del software" required></textarea>
+    <div class="invalid-feedback">Por favor, introduce la descripción.</div>
+  </div>
+  <button type="submit" class="btn btn-primary">Añadir Software</button>
+</form>
+
+<!-- Lista de softwares -->
+<h3>Lista de Softwares</h3>
+<div class="card-deck">
+  <% if (asignatura.software && asignatura.software.length > 0) { %>
+    <% asignatura.software.forEach(software => { %>
+      <div class="card mb-4">
+        <div class="card-header bg-info text-white text-center">
+          <%= software.descripcion || 'Sin descripción' %>
+        </div>
+        <div class="card-body">
+          <p><strong>Link:</strong> 
+            <% if (software.link) { %>
+              <a href="<%= software.link %>" target="_blank"><%= software.link %></a>
+            <% } else { %>
+              Sin link disponible
+            <% } %>
+          </p>
+          <div class="d-flex justify-content-between align-items-center">
+            <!-- Enlace para editar -->
+            <a href="/asignaturas/<%= asignatura._id %>/software/edit/<%= software._id %>" class="btn btn-warning btn-sm">Editar</a>
+
+            <!-- Enlace para eliminar -->
+            <a href="/asignaturas/<%= asignatura._id %>/software/delete/<%= software._id %>" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas eliminar este software?')">Eliminar</a>
+          </div>
+        </div>
+      </div>
+    <% }) %>
+  <% } else { %>
+    <div class="alert alert-info text-center" role="alert">
+      No hay softwares disponibles para esta asignatura.
+    </div>
+  <% } %>
+</div>
+
+<!-- Volver a la lista de asignaturas -->
+<a href="/asignaturas" class="btn btn-secondary">Volver a Asignaturas</a>

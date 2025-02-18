@@ -1,0 +1,36 @@
+<% include layout %>
+<h2 class="text-center">Editar Usuario</h2>
+
+<form action="/users/update/<%= user._id %>" method="POST" class="needs-validation" novalidate>
+  <div class="form-group">
+    <label for="nombre">Nombre</label>
+    <input type="text" name="nombre" class="form-control" id="nombre" value="<%= user.nombre %>" required>
+    <div class="invalid-feedback">Por favor, introduce el nombre.</div>
+  </div>
+  <div class="form-group">
+    <label for="apellido">Apellido</label>
+    <input type="text" name="apellido" class="form-control" id="apellido" value="<%= user.apellido %>" required>
+    <div class="invalid-feedback">Por favor, introduce el apellido.</div>
+  </div>
+  <div class="form-group">
+    <label for="dni">DNI</label>
+    <input type="text" name="dni" class="form-control" id="dni" value="<%= user.dni %>" required>
+    <div class="invalid-feedback">Por favor, introduce el DNI.</div>
+  </div>
+  <div class="form-group">
+    <label for="email">Correo electrónico</label>
+    <input type="email" name="email" class="form-control" id="email" value="<%= user.email %>" required>
+    <div class="invalid-feedback">Por favor, introduce el correo electrónico.</div>
+  </div>
+  <div class="form-group">
+    <label for="rol">Rol</label>
+    <select name="rol" class="form-control" id="rol" required>
+      <option value="Administrador" <% if (user.rol === 'Administrador') { %>selected<% } %>>Administrador</option>
+      <option value="Profesor" <% if (user.rol === 'Profesor') { %>selected<% } %>>Profesor</option>
+      <option value="Alumno" <% if (user.rol === 'Alumno') { %>selected<% } %>>Alumno</option>
+    </select>
+    <div class="invalid-feedback">Por favor, selecciona el rol.</div>
+  </div>
+  <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+</form>
+
